@@ -1,4 +1,9 @@
 #coding:utf-8
+'''
+公司: r"C:\Users\Administrator\Documents\leidian\Pictures\微博\{}.jpg"
+myself: r"C:\Users\hty\Documents\雷电模拟器\Pictures\微博\{}.jpg"
+
+'''
 import requests,re,random
 import uiautomator2 as u2
 import urllib.request
