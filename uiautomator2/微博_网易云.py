@@ -113,8 +113,3 @@ class 微博转发:
         d.app_start("com.hengye.share","com.hengye.share.module.status.StatusFavoriteActivity");
         d(description="取消收藏").click()
         d.app_start("com.netease.cloudmusic")
-
-# 主函数====================================================================
-'''
-#悬疑片推荐##电影收藏夹##电影##电影推荐#
-'''
