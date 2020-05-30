@@ -9,8 +9,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 输入:
 chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\selenum\AutomationProfile"
 '''
-
-
+'''
 chrome_options = webdriver.ChromeOptions()
 mobile = {"deviceName":"Galaxy S5"}
 
@@ -21,7 +20,17 @@ chrome_options.add_argument('user-agent="MQQBrowser/26 Mozilla/5.0 (Linux; U; An
 chrome_driver = "C:\Python37\chromedriver.exe"
 driver = webdriver.Chrome(chrome_driver, options=chrome_options)
 driver.implicitly_wait(5) #  隐式等待
+'''
+
+from selenium import webdriver
+
+option = webdriver.ChromeOptions()
+option.add_argument(r'--user-data-dir=C:\Users\Administrator\AppData\Local\Google\Chrome\User Data\Default')  # 设置成用户自己的数据目录
+
+driver = webdriver.Chrome(options=option)
 
 
+# 主函数>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 吾爱破解.签到(driver,"1126875067","341223.hty")
+
 
