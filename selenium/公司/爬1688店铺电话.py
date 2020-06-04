@@ -11,14 +11,6 @@ import requests
 chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\selenum\AutomationProfile"
 
 '''
-
-
-
-
-
-
-
-
 chrome_options = webdriver.ChromeOptions()
 mobile = {"deviceself.name":"Galaxy S5"}
 # "mobileEmulation", mobile
@@ -28,7 +20,6 @@ driver = webdriver.Chrome(options=chrome_options)
 print(driver.title)
 
 # 封装函数#############################################
-
 class 爬取1688_phone:
     def __init__(self):
         self.headers = {
@@ -107,31 +98,28 @@ class 爬取1688_phone:
         else:
         	# print(req.text)
         	print("没有移动电话")
+        	self.post_shop_phone(self.name,"")
         	# sleep(1212121)
 
 
 
     # 数据库: 上传shop电话号码
     def post_shop_phone(self,name,phone):
-    	payload = 'shop_name={}&mobile={}'.format(name,phone)
+    	payload = 'shop_name={}&mobile={}&ori_type=1'.format(name,phone)
     	headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     	response = requests.post("http://112.124.127.143:8049/api/AliShop/PostAliShopUserOne",headers=headers, data = payload.encode('utf-8'))
 
     	print(phone + name + response.text)
 
 
-
-# 主函数>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>主函数>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 phone_1688 = 爬取1688_phone()
-for index in range(4,102):
+for index in range(2,102):
 	phone_1688.爬取()
 	driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 	sleep(2)
 	driver.find_element_by_xpath("//a[text()='{}']".format(index)).click()
-	sleep(2)
-    
+	sleep(2) 
 
 
 
