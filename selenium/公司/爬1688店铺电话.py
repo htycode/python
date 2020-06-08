@@ -49,12 +49,13 @@ class 爬取1688_phone:
 
             # 获取联系方式网页的链接
             contactinfo_link = self.get_联系方式html_link(link)
+            print(contactinfo_link)
 
-            # 获取_店铺名:
-            self.name = html.get_attribute('title')
+            # # 获取_店铺名:
+            # self.name = html.get_attribute('title')
 
-            # 获取电话号码->上传到数据库
-            self.get_联系方式html_phone_post(contactinfo_link)
+            # # 获取电话号码->上传到数据库
+            # self.get_联系方式html_phone_post(contactinfo_link)
 
 
             
@@ -64,11 +65,15 @@ class 爬取1688_phone:
         # 如果链接比较长
         if re.search(r"^https://dj.1688.com", link):
             link = re.search(r"2F(\w+?\.1688\.com)%3", link)[1]
-            contactinfo_link = "https://" + link + r"/page/contactinfo.html"
+            contactinfo_link = "https://" + link + r"/page/creditdetail.html"
         else:
-            contactinfo_link = link + r"page/contactinfo.html"
+            link = re.search(r"(https://\w+?\.1688\.com)", link)[1]
+            contactinfo_link = link + r"/page/creditdetail.html"
         # print(contactinfo_link)
         return contactinfo_link
+
+
+
 
 
     # 获取电话号码
@@ -114,12 +119,15 @@ class 爬取1688_phone:
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>主函数>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 phone_1688 = 爬取1688_phone()
-for index in range(2,102):
-	phone_1688.爬取()
-	driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-	sleep(2)
-	driver.find_element_by_xpath("//a[text()='{}']".format(index)).click()
-	sleep(2) 
+phone_1688.爬取()
+
+
+# for index in range(2,102):
+# 	phone_1688.爬取()
+# 	driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+# 	sleep(2)
+# 	driver.find_element_by_xpath("//a[text()='{}']".format(index)).click()
+# 	sleep(2) 
 
 
 
