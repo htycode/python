@@ -5,6 +5,10 @@ from time import sleep
 from selenium.webdriver.common.action_chains import ActionChains
 import re
 import requests
+from bs4 import BeautifulSoup #导入bs4库
+from lxml import etree
+import gzip
+
 '''
 在浏览器文件位置打开cmd
 输入:
@@ -27,16 +31,15 @@ class 爬取1688_phone:
             'accept-encoding': 'gzip, deflate, br',
             'accept-language': 'zh-CN,zh;q=0.9',
             'cache-control': 'max-age=0',
-            # 'cookie': 'cna=uPJUFxmPhCwCAbR3GHoSl1xl; UM_distinctid=17254c2cdc81d5-0e42093353349e-d373666-100200-17254c2cdc940b; taklid=91ccfc8d98144596adf6b4fed9ab4395; ali_beacon_id=180.119.24.122.1590559955185.481463.2; h_keys="%u6709%u9650%u516c%u53f8"; ali_ab=180.119.24.122.1590560013181.5; lid=t_1493565210967_0515; ali_apache_track=c_mid=b2b-299020775014ef0|c_lid=t_1493565210967_0515|c_ms=1; last_mid=b2b-299020775014ef0; cookie2=1a5b2e09824e6643f23733a2bcb2a65d; t=d5f0504094442d001644cd613e43ba46; _tb_token_=535bbaede368e; alicnweb=touch_tb_at%3D1590626846640%7Clastlogonid%3Dt_1493565210967_0515; cookie1=BxZjKG0ztSSTZ7cIWSgbK%2FusNfEeiKB%2B7KZTAv14WOY%3D; cookie17=UUGrdlWh%2BFygrQ%3D%3D; sg=502; csg=3f166824; unb=2990207750; uc4=id4=0%40U2OcRhFnSO1ANdrxQInbrllz0mXy&nk4=0%40FbMocp0REDyJnA%2B62ByJu1noZqIwO3kU%2BWodvtYc7w%3D%3D; __cn_logon__=true; __cn_logon_id__=t_1493565210967_0515; ali_apache_tracktmp=c_w_signed=Y; _nk_=t_1493565210967_0515; _csrf_token=1590626868661; _is_show_loginId_change_block_=b2b-299020775014ef0_false; _show_force_unbind_div_=b2b-299020775014ef0_false; _show_sys_unbind_div_=b2b-299020775014ef0_false; _show_user_unbind_div_=b2b-299020775014ef0_false; __rn_alert__=false; ad_prefer="2020/05/28 08:48:17"; isg=BHBwvN9R2rwqN4a5HgnsfgKqQT7CuVQDXBEbgWrASUufJRTPEMqsktBXeSxF8wzb; l=eBgf9BXuQD29Fw3EBO5Zdurza77tXIOfGVNzaNbMiInca1yhLFpAvNQDtI0kbdtjitfvCexuEdARfRUk7rU38xZ7hHCuattzG296-',
-            'referer': 'https://nbc520.1688.com/?tracelog=p4p&clickid=cfa6a9385812430b9d8dad0e185a039a&sessionid=c6d1a503dafce9892d4669d7cdcc7e21',
+            'cookie': 'cna=uPJUFxmPhCwCAbR3GHoSl1xl; UM_distinctid=17254c2cdc81d5-0e42093353349e-d373666-100200-17254c2cdc940b; taklid=91ccfc8d98144596adf6b4fed9ab4395; ali_beacon_id=180.119.24.122.1590559955185.481463.2; ali_ab=180.119.24.122.1590560013181.5; h_keys="%u6709%u9650%u516c%u53f8#%u5e7f%u5dde%u597d%u5f69%u73a9%u5177%u6709%u9650%u516c%u53f8"; lid=tb494427273; ali_apache_track=c_mid=b2b-220806465765439599|c_lid=tb494427273|c_ms=1; ad_prefer="2020/06/08 14:37:52"; cookie2=1d22c9e2b9eeec9ab1d6557de96fbb1c; t=d5f0504094442d001644cd613e43ba46; _tb_token_=71738e35d33eb; uc4=id4=0%40U2grGR8eksMwno2xGbzBeI7YMydGxkRd&nk4=0%40FY4KqaYvwwTHORq5NlzDG3ZA7JVvpQ%3D%3D; __cn_logon__=false; alicnweb=touch_tb_at%3D1591598276350%7Clastlogonid%3Dtb494427273%7Cshow_inter_tips%3Dfalse; _csrf_token=1591598279508; l=eBgf9BXuQD29Fo3CBOfZlurza779cIRfguPzaNbMiOCPOZfW52slWZvISLLXCnGcnsdkR32kIQI_BfT-jyUB57mStqBHOrQoJdLh.; isg=BHV1KKE8R-mFD6NGY_Kh2efBhPEv8ikE2Sq-3veaUuw7zpTAv0bP1E4EGJN4jkG8',
+            'referer': 'https://s.1688.com/company/-D3D0CFDEB9ABCBBE.html?',
             'sec-fetch-dest': 'document',
             'sec-fetch-mode': 'navigate',
-            'sec-fetch-site': 'same-origin',
+            'sec-fetch-site': 'none',
             'sec-fetch-user': '?1',
             'upgrade-insecure-requests': '1',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36',
-            }
-
+        }
 
 
     def 爬取(self):
@@ -51,60 +54,75 @@ class 爬取1688_phone:
             contactinfo_link = self.get_联系方式html_link(link)
             print(contactinfo_link)
 
-            # # 获取_店铺名:
-            # self.name = html.get_attribute('title')
+            # 获取_店铺名:
+            self.name = html.get_attribute('title')
 
-            # # 获取电话号码->上传到数据库
-            # self.get_联系方式html_phone_post(contactinfo_link)
+            # 获取电话号码->上传到数据库
+            self.get_联系方式html_phone_post(contactinfo_link)
 
 
             
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>封装函数>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    # 获取联系方式的网址>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     def get_联系方式html_link(self,link):
         # 如果链接比较长
         if re.search(r"^https://dj.1688.com", link):
             link = re.search(r"2F(\w+?\.1688\.com)%3", link)[1]
-            contactinfo_link = "https://" + link + r"/page/creditdetail.html"
+            contactinfo_link = "https://" + link
         else:
             link = re.search(r"(https://\w+?\.1688\.com)", link)[1]
-            contactinfo_link = link + r"/page/creditdetail.html"
+            contactinfo_link = link
         # print(contactinfo_link)
         return contactinfo_link
 
-
-
-
-
-    # 获取电话号码
+    # 获取电话号码>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     def get_联系方式html_phone_post(self,contactinfo_link):
         # 获取联系方式网址源码
-        req = requests.get(contactinfo_link, headers=self.headers)
+        res = requests.get(contactinfo_link, headers=self.headers)
+        # print(res.text)
+        html = etree.HTML(BeautifulSoup(res.text, 'lxml').prettify())
+        try:
+            固话 = re.search("\d[\d ]+", html.xpath('//div[@class="m-content"]/dl[2]/dd/text()')[0] ,re.A)[0] if len(html.xpath('//div[@class="m-content"]/dl[2]/dd/text()')) != 0 else ""
+        except:
+            固话 = re.search("\d[\d ]+", html.xpath('//div[@class="m-content"]/dl[1]/dd/text()')[0] ,re.A)[0] if len(html.xpath('//div[@class="m-content"]/dl[1]/dd/text()')) != 0 else ""
 
-        if(re.findall(r"移动电话", req.text)):
-        	if re.findall(r"登录后可见", req.text):
-        		print("需要登录"+contactinfo_link+"****************************************************")
-        		return ""
 
-        	phone = re.findall(r"移动电话.+?(1\d{10})[^0-9]", req.text, re.DOTALL)
-        	if phone:
-        		phone = phone[0]
-        	else:
-        		phone = ""
-        		print(self.name+"##############################################################################################")
+        print(固话)
 
-        	# 上传到数据库
-        	self.post_shop_phone(self.name,phone)
+        移动电话 = ""
+        if len(html.xpath('//dd[@class="mobile-number"]/text()')) != 0:
+            phone = html.xpath('//dd[@class="mobile-number"]/text()')[0]
+            if re.search("\d+", phone):
+                移动电话 = re.search("\d+", phone)[0]
 
-        elif(re.findall(r"滑动一下马上回来", req.text)):
-        	print("ip被限制, 要等一会儿")
-        	sleep(11111111)
+        print(移动电话)
 
-        else:
-        	# print(req.text)
-        	print("没有移动电话")
-        	self.post_shop_phone(self.name,"")
-        	# sleep(1212121)
+        #
+        # if(re.findall(r"移动电话", req.text)):
+        # 	if re.findall(r"登录后可见", req.text):
+        # 		print("需要登录"+contactinfo_link+"****************************************************")
+        # 		return ""
+        #
+        # 	phone = re.findall(r"移动电话.+?(1\d{10})[^0-9]", req.text, re.DOTALL)
+        # 	if phone:
+        # 		phone = phone[0]
+        # 	else:
+        # 		phone = ""
+        # 		print(self.name+"##############################################################################################")
+        #
+        # 	# 上传到数据库
+        # 	self.post_shop_phone(self.name,phone)
+        #
+        # elif(re.findall(r"滑动一下马上回来", req.text)):
+        # 	print("ip被限制, 要等一会儿")
+        # 	sleep(11111111)
+
+        # else:
+        # 	# print(req.text)
+        # 	print("没有移动电话")
+        # 	self.post_shop_phone(self.name,"")
+        # 	# sleep(1212121)
 
 
 
